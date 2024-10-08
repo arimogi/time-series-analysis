@@ -120,6 +120,10 @@ RootMSE = function(m, o){
 #setwd("")
 myDir <- getwd()
 print(myDir)
+
+myDir <- getSourceEditorContext()$path
+print(myDir)
+
 Data_Tot <- read.csv("Rainfall3Lokasi-GSTAR.txt", header=TRUE)
 
 Data_Asli <- as.matrix(Data_Tot)

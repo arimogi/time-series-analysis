@@ -51,3 +51,8 @@ https://www.datacamp.com/tutorial/neural-network-models-r
 https://stackoverflow.com/questions/47126735/invalid-type-list-for-variable
 
 https://github.com/t-kalinowski/deep-learning-with-R-2nd-edition-code/tree/main
+
+https://s3.amazonaws.com/keras-datasets/jena_climate_2009_2016.csv.zip
+
+https://www.bgc-jena.mpg.de/wetter/weather_data.html
+
