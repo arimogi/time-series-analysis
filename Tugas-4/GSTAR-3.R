@@ -1,3 +1,5 @@
+library(rstudioapi)
+
 GSTAR<-function(Data,W,p){
   Series<-ts(Data)
   k<-ncol(Data) # Number Location
@@ -115,6 +117,9 @@ RootMSE = function(m, o){
 }
 
 #### FUNGSI GSTAR UNTUK KASUS 3 LOKASI STASIUN CUACA
+#setwd("")
+myDir <- getwd()
+print(myDir)
 Data_Tot <- read.csv("Rainfall3Lokasi-GSTAR.txt", header=TRUE)
 
 Data_Asli <- as.matrix(Data_Tot)
@@ -154,7 +159,7 @@ Train_Result_temp <- array(data=NA, dim=c(nrow(Result), 3, 3), dimnames=NULL)
 Train_Result_GSTAR <- array(data=NA, dim=c(n_train, 3, 3), dimnames=NULL)
 for (lok in 1:3){                          
   for (col in 1:3){
-     Train_Result_temp[ ,col,lok] <- Result[ ,(lok+(col-1)*3)]
+    Train_Result_temp[ ,col,lok] <- Result[ ,(lok+(col-1)*3)]
   }
 }
 ## result adalah hasil training gstar berdimensi jumlah_train x 9
@@ -208,10 +213,10 @@ Data_prediksi <- matrix(data=NA, (n_validation-dif), 3, dimnames=NULL)
 for (i in (p+1):(n_validation-dif))
 {
   temp <- matrix(data=0, 3, 1)  
-    for (j in 1:p)
-    {
-      temp <- temp + Matrix_par[ , , j, 1]%*% t(t(Data_Test[i-j, ])) + Matrix_par[ , , j, 2]%*% W %*% t(t(Data_Test[i-j, ]))
-    }
+  for (j in 1:p)
+  {
+    temp <- temp + Matrix_par[ , , j, 1]%*% t(t(Data_Test[i-j, ])) + Matrix_par[ , , j, 2]%*% W %*% t(t(Data_Test[i-j, ]))
+  }
   Data_prediksi[i, ]<-t(temp)
 }
 
@@ -230,7 +235,7 @@ for (lok in 1:3)
   Valid_Result_GSTAR[,1,lok]<-diffinv(Data_Test[ ,lok], lag=dif, diffrerences = 1, xi=Data_Asli[(n_train+1):(n_train+dif),lok])
   Valid_Result_GSTAR[,2,lok]<-diffinv(Data_prediksi[,lok], lag=dif, diffrerences = 1, xi=Data_Asli[(n_train+1):(n_train+dif),lok])
   Valid_Result_GSTAR[,3,lok] <- Valid_Result_GSTAR[,1,lok]-Valid_Result_GSTAR[,2,lok]
-  }
+}
 
 
 ## Perhitungan Kinerja Training dan Validasi per lokasi KESELURUHAN DATA
@@ -305,6 +310,6 @@ for (lok in 1:3)
 ## Analisis Residual
 for (lok in 1:3)
 {
-AutoCorrelation <- acf(Train_Result_temp[ ,3,lok], plot = FALSE, lag.max = 24)
-plot(AutoCorrelation, main = c("Error dari Model GSTAR", lok), lwd=3,  ci.type = "ma")
+  AutoCorrelation <- acf(Train_Result_temp[ ,3,lok], plot = FALSE, lag.max = 24)
+  plot(AutoCorrelation, main = c("Error dari Model GSTAR", lok), lwd=3,  ci.type = "ma")
 }
