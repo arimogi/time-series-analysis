@@ -1,5 +1,11 @@
 library(gstar)
+library(tseries)
 library(xts)
+library(forecast)
+library(lmtest)
+library(nortest)
+library(MASS)
+library(stargazer)
 data("LocationCPI")
 
 #-----Use data with xts object----#
@@ -8,8 +14,8 @@ x = xts(LocationCPI[, -1], order.by = as.Date(LocationCPI[, 1]))
 s <- round(nrow(x) * 0.8) ## split into training and testing (80:20)
 x_train <- x[1:s, ]
 x_test <- x[-c(1:s), ]
-
-
+print(length(x_test))
+print(length(x))
 weight = matrix(c(0, 1, 1, 1,                    # create the uniform weight.
                   1, 0, 1, 1,
                   1, 1, 0, 1,
@@ -22,15 +28,31 @@ weight = weight/(ncol(x) - 1) #the sum of weight is equal to 1 every row.
 fit <-  gstar(x_train, weight = weight,
               p = 1, d = 0, est = "OLS")
 summary(fit)
+print(fit$residuals)
 
 performance(fit)
+sst <- sum((x_train - mean(x_train))^2)
+sse <- sum(fit$residuals^2)
+r_square <- 1-(sse/sst)
+print(r_square)
+print(sst)
+print(sse)
 performance(fit, x_test) ## to check the performance with testing data
 
-predict(fit, n = 10) #forecast 10 data ahead
+x_predict <- predict(fit, n = 40) #forecast 10 data ahead
 
 plot(fit)
-plot(fit, n_predict = 10) #plot with 10 forecasting data
+plot(fit, n_predict = 40) #plot with 10 forecasting data
 plot(fit, testing = x_test)
+print(fit)
+
+print(x_test)
+print(x_predict)
+plot(x_test, x_predict)
+print(x_test, x_predict)
+print(length(x_predict))
+
+
 
 #---- Use dataframe or matrix---#
 x2 <- LocationCPI
